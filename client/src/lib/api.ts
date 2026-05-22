@@ -1,30 +1,36 @@
-export interface Pipeline {
+export interface Profile {
   id: string
   name: string
   cvContent: string
+  parsedProfile: string | null
+  preferences: string | null
   createdAt: string
   updatedAt: string
 }
 
-export interface SupplementaryContent {
+export interface Search {
   id: string
-  pipelineId: string
-  title: string
-  content: string
-  createdAt: string
-  updatedAt: string
-}
-
-export interface Branch {
-  id: string
-  pipelineId: string
+  profileId: string
   name: string
-  jobDescription: string
-  matrixResult: string | null
-  optimizedCv: string | null
-  coverLetter: string | null
+  status: string
   createdAt: string
   updatedAt: string
+}
+
+export interface Job {
+  id: string
+  searchId: string
+  title: string
+  company: string
+  location: string
+  url: string
+  source: string
+  description: string
+  salary: string
+  remote: boolean
+  matchScore: number | null
+  matchAnalysis: string | null
+  createdAt: string
 }
 
 const BASE = '/api'
@@ -39,67 +45,36 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 }
 
 export const api = {
-  pipelines: {
-    list: () => request<Pipeline[]>('/pipelines'),
-    get: (id: string) => request<Pipeline>(`/pipelines/${id}`),
-    create: (data: Partial<Pipeline>) =>
-      request<Pipeline>('/pipelines', {
+  profiles: {
+    list: () => request<Profile[]>('/profiles'),
+    get: (id: string) => request<Profile>(`/profiles/${id}`),
+    create: (data: Partial<Profile>) =>
+      request<Profile>('/profiles', {
         method: 'POST',
         body: JSON.stringify(data),
       }),
-    update: (id: string, data: Partial<Pipeline>) =>
-      request<Pipeline>(`/pipelines/${id}`, {
+    update: (id: string, data: Partial<Profile>) =>
+      request<Profile>(`/profiles/${id}`, {
         method: 'PUT',
         body: JSON.stringify(data),
       }),
     delete: (id: string) =>
-      request<{ ok: boolean }>(`/pipelines/${id}`, { method: 'DELETE' }),
+      request<{ ok: boolean }>(`/profiles/${id}`, { method: 'DELETE' }),
+    parseCv: (id: string) =>
+      request<Profile>(`/profiles/${id}/parse-cv`, { method: 'POST' }),
   },
-  supplementaryContents: {
-    list: (pipelineId: string) =>
-      request<SupplementaryContent[]>(
-        `/pipelines/${pipelineId}/supplementary-contents`
-      ),
-    get: (id: string) =>
-      request<SupplementaryContent>(`/supplementary-contents/${id}`),
-    create: (pipelineId: string, data: Partial<SupplementaryContent>) =>
-      request<SupplementaryContent>(
-        `/pipelines/${pipelineId}/supplementary-contents`,
-        { method: 'POST', body: JSON.stringify(data) }
-      ),
-    update: (id: string, data: Partial<SupplementaryContent>) =>
-      request<SupplementaryContent>(`/supplementary-contents/${id}`, {
-        method: 'PUT',
-        body: JSON.stringify(data),
-      }),
+  searches: {
+    list: (profileId: string) =>
+      request<Search[]>(`/profiles/${profileId}/searches`),
+    get: (id: string) => request<Search>(`/searches/${id}`),
+    create: (profileId: string) =>
+      request<Search>(`/profiles/${profileId}/searches`, { method: 'POST' }),
     delete: (id: string) =>
-      request<{ ok: boolean }>(`/supplementary-contents/${id}`, {
-        method: 'DELETE',
-      }),
-  },
-  branches: {
-    list: (pipelineId: string) =>
-      request<Branch[]>(`/pipelines/${pipelineId}/branches`),
-    get: (id: string) => request<Branch>(`/branches/${id}`),
-    create: (pipelineId: string, data: Partial<Branch>) =>
-      request<Branch>(`/pipelines/${pipelineId}/branches`, {
+      request<{ ok: boolean }>(`/searches/${id}`, { method: 'DELETE' }),
+    run: (id: string) =>
+      request<{ ok: boolean; jobCount: number }>(`/searches/${id}/run`, {
         method: 'POST',
-        body: JSON.stringify(data),
       }),
-    update: (id: string, data: Partial<Branch>) =>
-      request<Branch>(`/branches/${id}`, {
-        method: 'PUT',
-        body: JSON.stringify(data),
-      }),
-    delete: (id: string) =>
-      request<{ ok: boolean }>(`/branches/${id}`, { method: 'DELETE' }),
-    analyze: (id: string) =>
-      request<Branch>(`/branches/${id}/analyze`, { method: 'POST' }),
-    optimize: (id: string) =>
-      request<Branch>(`/branches/${id}/optimize`, { method: 'POST' }),
-    coverLetter: (id: string) =>
-      request<Branch>(`/branches/${id}/cover-letter`, { method: 'POST' }),
-    runPipeline: (id: string) =>
-      request<Branch>(`/branches/${id}/run-pipeline`, { method: 'POST' }),
+    jobs: (id: string) => request<Job[]>(`/searches/${id}/jobs`),
   },
 }

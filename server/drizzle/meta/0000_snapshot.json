@@ -1,11 +1,11 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "37966bb5-9071-4dca-9060-f1613f58becb",
+  "id": "37170926-d447-460d-b7ef-1918147600c0",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
-    "branches": {
-      "name": "branches",
+    "jobs": {
+      "name": "jobs",
       "columns": {
         "id": {
           "name": "id",
@@ -14,37 +14,85 @@
           "notNull": true,
           "autoincrement": false
         },
-        "pipeline_id": {
-          "name": "pipeline_id",
+        "search_id": {
+          "name": "search_id",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "name": {
-          "name": "name",
+        "title": {
+          "name": "title",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "job_description": {
-          "name": "job_description",
+        "company": {
+          "name": "company",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
           "default": "''"
         },
-        "matrix_result": {
-          "name": "matrix_result",
+        "location": {
+          "name": "location",
           "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "''"
+        },
+        "url": {
+          "name": "url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "''"
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "''"
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "''"
+        },
+        "salary": {
+          "name": "salary",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "''"
+        },
+        "remote": {
+          "name": "remote",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": false
+        },
+        "match_score": {
+          "name": "match_score",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
-        "optimized_cv": {
-          "name": "optimized_cv",
+        "match_analysis": {
+          "name": "match_analysis",
           "type": "text",
           "primaryKey": false,
           "notNull": false,
@@ -56,23 +104,16 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
         }
       },
       "indexes": {},
       "foreignKeys": {
-        "branches_pipeline_id_pipelines_id_fk": {
-          "name": "branches_pipeline_id_pipelines_id_fk",
-          "tableFrom": "branches",
-          "tableTo": "pipelines",
+        "jobs_search_id_searches_id_fk": {
+          "name": "jobs_search_id_searches_id_fk",
+          "tableFrom": "jobs",
+          "tableTo": "searches",
           "columnsFrom": [
-            "pipeline_id"
+            "search_id"
           ],
           "columnsTo": [
             "id"
@@ -85,8 +126,8 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "pipelines": {
-      "name": "pipelines",
+    "profiles": {
+      "name": "profiles",
       "columns": {
         "id": {
           "name": "id",
@@ -110,13 +151,19 @@
           "autoincrement": false,
           "default": "''"
         },
-        "supplementary_content": {
-          "name": "supplementary_content",
+        "parsed_profile": {
+          "name": "parsed_profile",
           "type": "text",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "''"
+          "notNull": false,
+          "autoincrement": false
+        },
+        "preferences": {
+          "name": "preferences",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
         },
         "created_at": {
           "name": "created_at",
@@ -135,6 +182,73 @@
       },
       "indexes": {},
       "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "searches": {
+      "name": "searches",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "profile_id": {
+          "name": "profile_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'pending'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "searches_profile_id_profiles_id_fk": {
+          "name": "searches_profile_id_profiles_id_fk",
+          "tableFrom": "searches",
+          "tableTo": "profiles",
+          "columnsFrom": [
+            "profile_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "checkConstraints": {}

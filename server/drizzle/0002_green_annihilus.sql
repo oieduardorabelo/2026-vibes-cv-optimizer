@@ -1,1 +1,0 @@
-ALTER TABLE `branches` ADD `cover_letter` text;

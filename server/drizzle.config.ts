@@ -5,6 +5,6 @@ export default defineConfig({
   out: './drizzle',
   dialect: 'sqlite',
   dbCredentials: {
-    url: './data/cvcv.db',
+    url: './data/jobfinder.db',
   },
 })

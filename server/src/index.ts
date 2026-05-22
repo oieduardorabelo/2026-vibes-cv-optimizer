@@ -1,15 +1,11 @@
 import { H3 } from 'h3'
 import { toNodeHandler } from 'h3/node'
 import { listen } from 'listhen'
-import pipelinesRouter from './routes/pipelines.js'
-import branchesRouter from './routes/branches.js'
-import supplementaryContentsRouter from './routes/supplementary-contents.js'
-import analyzeRouter from './routes/analyze.js'
+import profilesRouter from './routes/profiles.js'
+import searchesRouter from './routes/searches.js'
 
 const app = new H3()
-app.use(pipelinesRouter)
-app.use(branchesRouter)
-app.use(supplementaryContentsRouter)
-app.use(analyzeRouter)
+app.use(profilesRouter)
+app.use(searchesRouter)
 
 listen(toNodeHandler(app), { port: 3001 })

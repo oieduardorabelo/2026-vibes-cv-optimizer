@@ -1,34 +1,40 @@
 import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core'
 
-export const pipelines = sqliteTable('pipelines', {
+export const profiles = sqliteTable('profiles', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
   cvContent: text('cv_content').notNull().default(''),
+  parsedProfile: text('parsed_profile'),
+  preferences: text('preferences'),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
 })
 
-export const supplementaryContents = sqliteTable('supplementary_contents', {
+export const searches = sqliteTable('searches', {
   id: text('id').primaryKey(),
-  pipelineId: text('pipeline_id')
+  profileId: text('profile_id')
     .notNull()
-    .references(() => pipelines.id, { onDelete: 'cascade' }),
-  title: text('title').notNull().default(''),
-  content: text('content').notNull().default(''),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
-})
-
-export const branches = sqliteTable('branches', {
-  id: text('id').primaryKey(),
-  pipelineId: text('pipeline_id')
-    .notNull()
-    .references(() => pipelines.id, { onDelete: 'cascade' }),
+    .references(() => profiles.id, { onDelete: 'cascade' }),
   name: text('name').notNull(),
-  jobDescription: text('job_description').notNull().default(''),
-  matrixResult: text('matrix_result'),
-  optimizedCv: text('optimized_cv'),
-  coverLetter: text('cover_letter'),
+  status: text('status').notNull().default('pending'),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+})
+
+export const jobs = sqliteTable('jobs', {
+  id: text('id').primaryKey(),
+  searchId: text('search_id')
+    .notNull()
+    .references(() => searches.id, { onDelete: 'cascade' }),
+  title: text('title').notNull(),
+  company: text('company').notNull().default(''),
+  location: text('location').notNull().default(''),
+  url: text('url').notNull().default(''),
+  source: text('source').notNull().default(''),
+  description: text('description').notNull().default(''),
+  salary: text('salary').notNull().default(''),
+  remote: integer('remote', { mode: 'boolean' }).default(false),
+  matchScore: integer('match_score'),
+  matchAnalysis: text('match_analysis'),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 })
